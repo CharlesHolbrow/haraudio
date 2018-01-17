@@ -33,17 +33,17 @@ ai.on('data', (data) => {
 
   // Create an ArrayBuffer
   // see https://stackoverflow.com/questions/8609289/convert-a-binary-nodejs-buffer-to-javascript-arraybuffer/31394257#31394257
-  const ab = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);  
+  const ab = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
   const view = new Int16Array(ab); // Assumes Int16
   const frameCount = Math.floor(view.length / chanCount);
 
   // If there are 4 channels, data.length should be a multiple of 4
   if (frameCount !== view.length / chanCount) console.error('Error: weird data length');
-  
+
   // [a,b,c, a,b,c, ...] → [a,a,a,..., b,b,b,..., c,c,c]
   const audio = deinterleave(view);
 
-  // write a file for each channel  
+  // write a file for each channel
   // iterate over channels
   channels.forEach((chanNumber) => {
     // Create an audioBuffer. This is required, because the 'toWav' npm package
@@ -61,12 +61,12 @@ ai.on('data', (data) => {
     // Write the audio buffer to disk
     const wav = toWav(audioBuffer);
     const chunk = new Uint8Array(wav);
-    
-    fs.writeFile(`out${chanNumber}-${fileSuffix}.wav`, new Buffer(chunk), (err) => {
+
+    fs.writeFile(`./wavs/out${chanNumber}-${fileSuffix}.wav`, new Buffer(chunk), (err) => {
       if (err) console.error('Error when writing wav output', err);
     });
   });
-  
+
   fileSuffix++;
 });
 
