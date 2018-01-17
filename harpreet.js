@@ -1,10 +1,8 @@
-// var portAudio = require('../index.js');
-var portAudio = require('naudiodon');
-var _ = require('underscore');
-var fs = require('fs');
+const portAudio = require('naudiodon');
+const _ = require('underscore');
+const fs = require('fs');
 const deinterleave = require('deinterleave');
 const toWav = require('audiobuffer-to-wav');
-
 
 // WebAudio processing happens in a separate thread. Using an AudioContext we
 // can access and control the processing happening in an audio thread
@@ -48,12 +46,11 @@ ai.on('data', (data) => {
   channels.forEach((chanNumber) => {
     // Create an audioBuffer. This is required, because the 'toWav' npm package
     // expects an audio buffer.
-    audioBuffer = context.createBuffer(1, frameCount, sampleRate);
-    audioData = audioBuffer.getChannelData(0);
-
-    // Copy the the deinterleaved data to the audio buffer
+    const audioBuffer = context.createBuffer(1, frameCount, sampleRate);
+    const audioData = audioBuffer.getChannelData(0);
     const start = chanNumber * frameCount;
 
+    // Copy the the deinterleaved data to the audio buffer
     for (let i = 0; i < frameCount; i++) {
       audioData[i] = (audio[i + start]) / toFloat; // convert from uint 16 to floating point
     }
